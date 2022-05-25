@@ -116,10 +116,10 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 @app.route('/')
 def index():
+  generate_data()
   return render_template('pages/home.html')
 
 #TODO: insert dummy data to run project
-@app.route('/generate-data')
 def generate_data():
   try:
     genre = Genre.query.first()
@@ -317,12 +317,12 @@ def generate_data():
         listGenreArtists.append(x)
       db.session.add_all(listGenreArtists)
       db.session.commit()
-      return 'success'
+      flash('New dummy data was successfully listed!')
     else:
-      return 'DB is not empty '
+      print('DB is not empty')
   except:
     db.session.rollback()
-    return 'error import new data'
+    flash('New dummy data was not inserted to DB')
   
 
 
@@ -333,7 +333,7 @@ def generate_data():
 def venues():
   # TODO: replace with real venues data.
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
-
+  
   venues = Venue.query.all()
   seen = set()
   regions = []
@@ -372,6 +372,7 @@ def search_venues():
 
 def checkPastOrFutureShow(shows):
   result={"past_shows":[],"upcoming_shows":[]} 
+  print(shows)
   today = datetime.now()
   for show in shows:
     artist = Artist.query.get(show.artist_id)
@@ -517,7 +518,8 @@ def show_artist(artist_id):
   # TODO: replace with real artist data from the artist table, using artist_id
   artist = Artist.query.get(artist_id)
   genresId = Genre_Artist.query.filter(Genre_Artist.artist_id == artist_id).all()
-  shows = Show.query.filter(Show.venue_id == artist_id).all()
+  shows = Show.query.filter(Show.artist_id == artist_id).all()
+  print(shows)
   respGenreList = []
   for i in genresId:
     genre = Genre.query.get(i.genre_id)

@@ -1,4 +1,5 @@
 const deleteButton = document.querySelectorAll('.delete-button');
+var deleteFlag=false;
 for (let i = 0; i < deleteButton.length; i++) {
     const btn = deleteButton[i];
     success = true;
@@ -9,9 +10,8 @@ for (let i = 0; i < deleteButton.length; i++) {
         }).then(function(response){
             return response.json();
         }).then(function(jsonResponse){
-            console.log(jsonResponse);
-            success = jsonResponse['success'];
-            console.log(success);
+            deleteFlag = jsonResponse['success'];
+            location.reload();
         })
         .catch(function(err){
             alert(err);
